@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react'
 import personsService from './services/persons'
 
+const Notification = ({ alert }) => {
+  if (alert === null) {
+    return
+  }
+
+  return (
+    <div className={alert.result}>
+      {alert.message}
+    </div>
+  )
+}
+
 const Filter = ({filterStr, handler}) => {
   return (
     <div>
@@ -54,6 +66,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterStr, setNewFilter] = useState('')
   const [personsToShow, setNewPersonsToShow] = useState(persons)
+  const [alert, setAlert] = useState(null)
 
   // Initialize person array
   useEffect(() => {
@@ -63,6 +76,13 @@ const App = () => {
         setPersons(initialPersons)
       })
     }, [])
+
+  // Use this function to set new alerts, because we reuse the code
+  // for adding and modifying entries
+  const showAlert = (message, result) => {
+    setAlert({message, result})
+    setTimeout(() => setAlert(null), 5000)
+  }
 
   // Add person to person array
   const addPerson = (event) => {
@@ -84,6 +104,11 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
           })
+          .then(fulfilled => showAlert(`Replaced ${existingPerson.name}`, 'success'))
+          .catch(rejected => {
+            showAlert(`Information of ${existingPerson.name} has already been removed from server`, 'error')
+            setPersons(persons.filter(person => person.id !== existingPerson.id))
+          })
       }
     } else {
       // If no existing person, create a new entry
@@ -92,6 +117,7 @@ const App = () => {
       .then(returnedPerson => 
         setPersons(persons.concat(returnedPerson)
         ))
+      .then(fulfilled => showAlert(`Added ${newName}`, 'success'))
     }
     setNewName('')
     setNewNumber('')
@@ -117,6 +143,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification alert={alert} />
       <Filter filterStr={filterStr} handler={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm newName={newName} handleNameChange={handleNameChange}
