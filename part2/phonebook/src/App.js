@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import personsService from './services/persons'
 
 const Filter = ({filterStr, handler}) => {
   return (
@@ -31,70 +32,87 @@ const PersonForm = (props) => {
   )
 }
 
-const Entry = ({ person }) => <p>{person.name} {person.number}</p>
+const Entry = ({ person, buttonHandler }) => <div>{person.name} {person.number} <button onClick={buttonHandler}>delete</button></div>
 
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, handleDeletion }) => {
   return (
     <div>
     {personsToShow.map(person =>
-      <Entry key={person.name} person={person} />
+      <Entry
+      key={person.name}
+      person={person}
+      buttonHandler={handleDeletion(person)}
+      />
       )}
     </div>
   )
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterStr, setNewFilter] = useState('')
   const [personsToShow, setNewPersonsToShow] = useState(persons)
 
+  // Initialize person array
+  useEffect(() => {
+    personsService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+    }, [])
+
+  // Add person to person array
   const addPerson = (event) => {
     event.preventDefault()
 
-    console.log('adding person')
-    console.log(newName)
-    console.log(newNumber)
-
-    const personObject = {
+    const newPersonObject = {
       name: newName,
       number: newNumber,
-      id: newName,
     }
 
-    const nameExists = persons.find(element => element.name === newName)
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`)
+    // Check if the name is already in the phonebook
+    const existingPerson = persons.find(element => element.name === newName)
+    if (existingPerson) {
+      const proceed = window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)
+      // Replace name entry if the user accepts the confirm message
+      if (proceed) {
+        personsService
+          .replace(existingPerson.id, newPersonObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
+          })
+      }
+    } else {
+      // If no existing person, create a new entry
+      personsService
+      .create(newPersonObject)
+      .then(returnedPerson => 
+        setPersons(persons.concat(returnedPerson)
+        ))
     }
-
-    const newPersonsArray = (nameExists
-      ? [...persons]
-      : persons.concat(personObject)
-      )
-
-    setPersons(newPersonsArray)
     setNewName('')
     setNewNumber('')
-
-    setNewPersonsToShow(newPersonsArray.filter(person => person.name.toUpperCase().includes(filterStr.toUpperCase())))
-
   }
 
   const handleNameChange = event => setNewName(event.target.value)
   const handleNumberChange = event => setNewNumber(event.target.value)
-  const handleFilterChange = event => {
-    setNewFilter(event.target.value)
+  const handleFilterChange = event => setNewFilter(event.target.value)
 
-    const str = event.target.value
-    const personsCopy = [...persons].filter(person => person.name.toUpperCase().includes(str.toUpperCase()))
-    setNewPersonsToShow(personsCopy)
+  // Deletion button event handler factory
+  const handleDeletion = (person) => () => {
+    if (window.confirm(`Delete ${person.name}?`)){
+      personsService.makeDeletion(person.id)
+      setPersons(persons.filter(entry => entry.id !== person.id))
+    }
   }
+
+  // Update displayed persons when filter is changed
+  useEffect(() => {
+    setNewPersonsToShow(persons.filter(person => person.name.toUpperCase().includes(filterStr.toUpperCase())))
+  }, [persons, filterStr])
 
   return (
     <div>
@@ -106,7 +124,7 @@ const App = () => {
         addPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDeletion={handleDeletion} />
     </div>
   )
 }
