@@ -118,6 +118,10 @@ const App = () => {
         setPersons(persons.concat(returnedPerson)
         ))
       .then(fulfilled => showAlert(`Added ${newName}`, 'success'))
+      .catch(error => {
+        console.log(error.response.data.error)
+        showAlert(`${error.response.data.error}`, 'error')
+      })
     }
     setNewName('')
     setNewNumber('')
