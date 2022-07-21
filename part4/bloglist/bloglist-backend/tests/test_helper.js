@@ -53,8 +53,6 @@ const initialBlogs = [
 
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
-    console.log('og', blogs.map(blog => blog))
-    console.log('tojson', blogs.map(blog => blog.toJSON()))
     return blogs.map(blog => blog.toJSON())
 }
 
