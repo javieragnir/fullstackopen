@@ -1,11 +1,10 @@
 const blogsRouter = require('express').Router()
-const { compareSync } = require('bcrypt')
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
-    console.log('GETTING BLOG')
     const blogs = await Blog
         .find({}).populate('user')
 
@@ -16,7 +15,6 @@ blogsRouter.post('/', async (request, response) => {
     const body = request.body
 
     const user = request.user
-    console.log('user:', user)
 
     const newBlog = new Blog({
         title: body.title,
