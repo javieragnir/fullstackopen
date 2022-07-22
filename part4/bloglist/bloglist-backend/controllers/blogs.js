@@ -12,6 +12,10 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
+    if (!request.user) {
+        return response.status(401).json({ error: 'invalid token' })
+    }
+
     const body = request.body
 
     const user = request.user
@@ -32,6 +36,10 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
+    if (!request.user) {
+        return response.status(401).json({ error: 'invalid token' })
+    }
+
     const user = request.user
 
     const blog = await Blog.findById(request.params.id)

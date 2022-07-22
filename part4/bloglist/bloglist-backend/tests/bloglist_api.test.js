@@ -123,6 +123,28 @@ describe('when there is initially one user in db', () => {
 
             expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
         })
+
+        test('rejects new blog if a token is not provided', async () => {
+            const usersAtStart = await helper.usersInDb()
+
+            const newBlog = {
+                title: 'solitude in e minor',
+                author: 'squidward tentacles',
+                url: 'https://www.squidward.com',
+                likes: 0
+            }
+
+            const result = await api
+                .post('/api/blogs')
+                .send(newBlog)
+                .expect(401)
+                .expect('Content-Type', /application\/json/)
+
+            expect(result.body.error).toContain('invalid token')
+
+            const usersAtEnd = await helper.usersInDb()
+            expect(usersAtEnd).toEqual(usersAtStart)
+        }, 100000)
     })
 
     test('deletion of a blog succeeds with status code 204 if id is valid', async () => {
