@@ -1,0 +1,10 @@
+post http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphdmllciIsImlkIjoiNjJkOTEzMThmNzU5YTI0YWRiMzUzNWYyIiwiaWF0IjoxNjU4NDU1NTQ5fQ.yGCoebWiolwnE8oBQJEgN7q3iEaxe6FT9tmJi5ggf6M
+
+{
+    "title": "posting a blog requires a token",
+    "author": "javier",
+    "url": "www.random.com",
+    "likes": 0
+}
