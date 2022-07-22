@@ -74,7 +74,11 @@ const createToken = (user) => {
         id: user._id,
     }
 
-    return jwt.sign(userForToken, process.env.SECRET)
+    return jwt.sign(
+        userForToken,
+        process.env.SECRET,
+        { expiresIn: 60*60 }
+    )
 }
 
 module.exports = {
