@@ -3,6 +3,30 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const SuccessNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="success">
+      {message}
+    </div>
+  )
+}
+
+const ErrorNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -11,6 +35,8 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -42,12 +68,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-/*       setErrorMessage('Wrong credentials')
+      setSuccessMessage('logged in successfully')
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000) */
-      alert('wrong credentials')
+        setSuccessMessage(null)
+      }, 5000)
+    } catch (exception) {
+        setErrorMessage('wrong username or password')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
     }
   }
 
@@ -70,15 +99,27 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
+        setSuccessMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
+      })
+      .catch(error => {
+        setErrorMessage('error adding blog')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }
 
 if (user === null) {
   return (
       <div>
+      <SuccessNotification message={successMessage}/>
+      <ErrorNotification message={errorMessage}/>
         <h2>log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -107,6 +148,8 @@ if (user === null) {
 
   return (
     <div>
+      <SuccessNotification message={successMessage}/>
+      <ErrorNotification message={errorMessage}/>
       <h2>blogs</h2>
       <p>
         {user.username} logged in
