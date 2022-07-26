@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const [blogVisible, setBlogVisible] = useState(false)
 
   const hideWhenVisible = { display: blogVisible ? 'none' : ''}
@@ -28,6 +28,13 @@ const Blog = ({ blog, updateBlog }) => {
       title: blog.title,
       url: blog.url,
     })
+  }
+
+  const deleteSelf = (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      deleteBlog(blog.id)
+    }
 
   }
 
@@ -41,6 +48,7 @@ const Blog = ({ blog, updateBlog }) => {
         <div>likes {blog.likes} <button onClick={updateLikes}>like</button></div>
         <div>{blog.user.name}</div>
       </div>
+      <button onClick={deleteSelf}>delete</button>
     </div>  
   )
 }

@@ -37,7 +37,6 @@ const App = () => {
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [formVisible, setFormVisible] = useState(false)
-  const [likeUpdated, setLikeUpdated] = useState(0)
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
@@ -45,11 +44,6 @@ const App = () => {
       setBlogs( blogs )
     })  
   }, [])
-
-  useEffect(() => {
-    const blogsCopy = [...blogs].sort((a, b) => b.likes - a.likes)
-    setBlogs(blogsCopy)
-  }, [likeUpdated])
 
   useEffect (() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -117,9 +111,16 @@ const App = () => {
     blogService
     .update(id, blogObject)
     .then(returnedBlog => {
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-      setLikeUpdated(likeUpdated + 1)
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog).sort((a, b) => b.likes - a.likes))
     })
+  }
+
+  const deleteBlog = (id) => {
+    blogService
+      .deleteBlog(id)
+      .then(fulfilled => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
   }
 
 const toggleVisibility = () => {
@@ -167,7 +168,7 @@ if (user === null) {
         <button onClick={handleLogout}>logout</button>
       </p>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateLikes} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateLikes} deleteBlog={deleteBlog} />
       )}
       <h2>create new</h2>
       
