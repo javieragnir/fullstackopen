@@ -45,7 +45,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     const blog = await Blog.findById(request.params.id)
 
     if (blog.user.toString() !== user.id.toString()) {
-        return response.status(401).json({ error: 'delete user does not match post user'})
+        return response.status(401).json({ error: 'delete user does not match post user' })
     }
 
     await blog.remove()
@@ -56,13 +56,14 @@ blogsRouter.put('/:id', async (request, response, next) => {
     const body = request.body
 
     const blog = {
+        user: body.user,
         title: body.title,
         author: body.author,
         url: body.url,
         likes: body.likes || 0
     }
 
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user')
     response.json(updatedBlog)
 })
 
