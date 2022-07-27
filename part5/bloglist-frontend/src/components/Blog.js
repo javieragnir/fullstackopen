@@ -43,9 +43,9 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
             {blog.title} {blog.author}
             <button onClick={toggleBlogVisibility} style={hideWhenVisible}>view</button>
             <button onClick={toggleBlogVisibility} style={showWhenVisible}>hide</button>
-            <div style={showWhenVisible}>
-                <div>{blog.url}</div>
-                <div>likes {blog.likes} <button onClick={updateLikes}>like</button></div>
+            <div style={showWhenVisible} className='togglableContent'>
+                <div className='url'>{blog.url}</div>
+                <div className='likes'>likes {blog.likes} <button onClick={updateLikes}>like</button></div>
                 <div>{blog.user.name}</div>
             </div>
             <button onClick={deleteSelf}>delete</button>
