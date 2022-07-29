@@ -1,13 +1,11 @@
 describe('Blog app', function() {
     beforeEach(function() {
         cy.request('POST', 'http://localhost:3003/api/testing/reset')
-        const user = {
+        cy.createUser({
             name: 'Javier Agnir',
             username: 'jagnir',
             password: 'secret'
-        }
-        cy.request('POST', 'http://localhost:3003/api/users/', user)
-        cy.visit('http://localhost:3000')
+        })
     })
 
     it('Login form is shown', function() {
@@ -56,11 +54,38 @@ describe('Blog app', function() {
                 cy.createBlog({ title: 'blog3', author: 'author3', url: 'https://www.url3.com' })
             })
 
-            it.only('A blog can be liked', function() {
+            it('A blog can be liked', function() {
                 cy.contains('blog1 author1').contains('view').click()
                 cy.contains('blog1 author1').contains('like').click()
-    
+
                 cy.contains('blog1 author1').contains('likes 1')
+            })
+
+            it('A blog can be deleted by the user that created it', function() {
+                cy.contains('blog1 author1').contains('delete').click()
+
+                cy.should('not.contain', 'blog1 author1')
+            })
+
+            it.only('A blog can not be deleted by a user that did not create it', function() {
+                cy.on('uncaught:exception', function(err) {
+                    expect(err.response.data.error).to.include('delete user does not match post user')
+                    return false
+                })
+
+                cy.createUser({
+                    name: 'testuser',
+                    username: 'testuser',
+                    password: 'testuser',
+                })
+
+                cy.contains('logout').click()
+
+                cy.login({ username: 'testuser', password: 'testuser' })
+                cy.contains('blog1 author1').contains('delete').click()
+
+
+                cy.contains('blog1 author1')
             })
         })
     })
@@ -85,5 +110,14 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
         }
     })
 
+    cy.visit('http://localhost:3000')
+})
+
+Cypress.Commands.add('createUser', ({ name, username, password }) => {
+    cy.request(
+        'POST',
+        'http://localhost:3003/api/users/',
+        { name, username, password }
+    )
     cy.visit('http://localhost:3000')
 })
