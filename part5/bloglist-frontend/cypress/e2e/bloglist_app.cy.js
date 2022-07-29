@@ -49,30 +49,42 @@ describe('Blog app', function() {
 
         describe('When several blogs exist', function() {
             beforeEach(function() {
-                cy.createBlog({ title: 'blog1', author: 'author1', url: 'https://www.url1.com' })
-                cy.createBlog({ title: 'blog2', author: 'author2', url: 'https://www.url2.com' })
-                cy.createBlog({ title: 'blog3', author: 'author3', url: 'https://www.url3.com' })
+                cy.createBlog({ title: 'A Blog', author: 'An Author', url: 'https://www.placeholder.com', likes: 0 })
+                cy.createBlog({ title: 'The title with the least likes', author: 'author1', url: 'https://www.url1.com', likes: 1 })
+                cy.createBlog({ title: 'The title with the second most likes', author: 'author2', url: 'https://www.url2.com', likes: 2 })
+                cy.createBlog({ title: 'The title with the most likes', author: 'author3', url: 'https://www.url3.com', likes: 3 })
             })
 
             it('A blog can be liked', function() {
-                cy.contains('blog1 author1').contains('view').click()
-                cy.contains('blog1 author1').contains('like').click()
+                cy.contains('A Blog An Author').contains('view').click()
+                cy.contains('A Blog An Author').contains('like').click()
 
-                cy.contains('blog1 author1').contains('likes 1')
+                cy.contains('A Blog An Author').contains('likes 1')
             })
 
             it('A blog can be deleted by the user that created it', function() {
-                cy.contains('blog1 author1').contains('delete').click()
+                cy.contains('A Blog An Author').contains('delete').click()
 
-                cy.should('not.contain', 'blog1 author1')
+                cy.should('not.contain', 'A Blog An Author')
             })
 
-            it.only('A blog can not be deleted by a user that did not create it', function() {
-                cy.on('uncaught:exception', function(err) {
-                    expect(err.response.data.error).to.include('delete user does not match post user')
-                    return false
-                })
+            it('Blogs are ordered according to likes', function() {
+                cy.get('.blog').eq(0).should('contain', 'The title with the most likes')
+                cy.get('.blog').eq(1).should('contain', 'The title with the second most likes')
+                cy.get('.blog').eq(2).should('contain', 'The title with the least likes')
+            })
 
+            // No idea why, but this test passes when run by itself, but fails as part of the
+            // test suite. There seems to be a problem with the test above not resetting
+            // properly afterwards. When I switch the order of these tests, this test passes
+            // and the test above fails. When i duplicate this test, the test above passes,
+            // this test passes, and the duplicated test below fails.
+
+            // After implementing the test where blogs are ordered according to likes
+            // everything works after a sudden? Seems like tests now fail or pass (sometimes all pass)
+            // and I can't figure out why. Getting server 500 errors for some reason.
+
+            it('A blog can not be deleted by a user that did not create it', function() {
                 cy.createUser({
                     name: 'testuser',
                     username: 'testuser',
@@ -81,11 +93,16 @@ describe('Blog app', function() {
 
                 cy.contains('logout').click()
 
+                cy.on('uncaught:exception', function(err) {
+                    expect(err.response.data.error).to.include('delete user does not match post user')
+                    return false
+                })
+
                 cy.login({ username: 'testuser', password: 'testuser' })
-                cy.contains('blog1 author1').contains('delete').click()
+                cy.contains('A Blog An Author').contains('delete').click()
 
 
-                cy.contains('blog1 author1')
+                cy.contains('A Blog An Author')
             })
         })
     })
@@ -100,11 +117,11 @@ Cypress.Commands.add('login', ({ username, password }) => {
     })
 })
 
-Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+Cypress.Commands.add('createBlog', ({ title, author, url, likes = 0 }) => {
     cy.request({
         url: 'http://localhost:3003/api/blogs/',
         method: 'POST',
-        body: { title, author, url },
+        body: { title, author, url, likes },
         headers: {
             'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBloglistUser')).token}`
         }
