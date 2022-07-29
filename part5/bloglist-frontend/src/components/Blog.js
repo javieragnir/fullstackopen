@@ -40,8 +40,8 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     return (
         <div style={blogStyle}>
             {blog.title} {blog.author}
-            <button onClick={toggleBlogVisibility} style={hideWhenVisible}>view</button>
-            <button onClick={toggleBlogVisibility} style={showWhenVisible}>hide</button>
+            <button className="viewButton" onClick={toggleBlogVisibility} style={hideWhenVisible}>view</button>
+            <button className="hideButton" onClick={toggleBlogVisibility} style={showWhenVisible}>hide</button>
             <div style={showWhenVisible} className='togglableContent'>
                 <div className='url'>{blog.url}</div>
                 <div className='likes'>likes {blog.likes} <button onClick={updateLikes} className='likeButton'>like</button></div>
