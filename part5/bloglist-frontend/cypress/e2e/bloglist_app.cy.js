@@ -65,7 +65,7 @@ describe('Blog app', function() {
             it('A blog can be deleted by the user that created it', function() {
                 cy.contains('A Blog An Author').contains('delete').click()
 
-                cy.should('not.contain', 'A Blog An Author')
+                cy.get('html').should('not.contain', 'A Blog An Author')
             })
 
             it('Blogs are ordered according to likes', function() {
@@ -73,16 +73,6 @@ describe('Blog app', function() {
                 cy.get('.blog').eq(1).should('contain', 'The title with the second most likes')
                 cy.get('.blog').eq(2).should('contain', 'The title with the least likes')
             })
-
-            // No idea why, but this test passes when run by itself, but fails as part of the
-            // test suite. There seems to be a problem with the test above not resetting
-            // properly afterwards. When I switch the order of these tests, this test passes
-            // and the test above fails. When i duplicate this test, the test above passes,
-            // this test passes, and the duplicated test below fails.
-
-            // After implementing the test where blogs are ordered according to likes
-            // everything works after a sudden? Seems like tests now fail or pass (sometimes all pass)
-            // and I can't figure out why. Getting server 500 errors for some reason.
 
             it('A blog can not be deleted by a user that did not create it', function() {
                 cy.createUser({
