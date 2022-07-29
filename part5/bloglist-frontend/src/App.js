@@ -99,7 +99,7 @@ const App = () => {
                     setSuccessMessage(null)
                 }, 5000)
             })
-            .catch(error => {
+            .catch(() => {
                 setErrorMessage('error adding blog')
                 setTimeout(() => {
                     setErrorMessage(null)
@@ -118,7 +118,7 @@ const App = () => {
     const deleteBlog = (id) => {
         blogService
             .deleteBlog(id)
-            .then(fulfilled => {
+            .then(() => {
                 setBlogs(blogs.filter(blog => blog.id !== id))
             })
     }
@@ -133,7 +133,7 @@ const App = () => {
                 <SuccessNotification message={successMessage}/>
                 <ErrorNotification message={errorMessage}/>
                 <h2>log in to application</h2>
-                <form onSubmit={handleLogin}>
+                <form className="loginForm" onSubmit={handleLogin}>
                     <div>
             username
                         <input
