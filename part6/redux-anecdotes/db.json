@@ -39,6 +39,11 @@
       "content": "We can add new anecdotes and a notification will display",
       "votes": 0,
       "id": "_Efvh2z"
+    },
+    {
+      "content": "AnecdoteForm has been refactored to use connect",
+      "votes": 1,
+      "id": "3Qz2ZSY"
     }
   ]
 }
