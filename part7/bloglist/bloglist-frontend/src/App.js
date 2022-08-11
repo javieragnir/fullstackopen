@@ -4,19 +4,10 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
-
-const Notification = () => {
-  const { message, status } = useSelector(state => state.notification)
-
-  if (message === null) {
-    return null
-  }
-
-  return <div className={status}>{message}</div>
-}
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
