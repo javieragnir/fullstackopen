@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { setTimeoutId } from './timeoutIdReducer'
 
 const initialState = {
-  messsage: '',
+  message: '',
   status: '',
 }
 
@@ -22,7 +22,7 @@ const notificationSlice = createSlice({
         status: 'error'
       }
     },
-    clearNotification(state, action) {
+    clearNotification() {
       return initialState
     }
   }
@@ -30,7 +30,7 @@ const notificationSlice = createSlice({
 
 export const { addSuccessNotification, addErrorNotification, clearNotification } = notificationSlice.actions
 
-export const setSuccessNotification = (message, seconds) => {
+export const setSuccessNotification = (message, seconds = 5) => {
   return dispatch => {
     const timeout = seconds * 1000
     dispatch(addSuccessNotification(message))
@@ -41,7 +41,7 @@ export const setSuccessNotification = (message, seconds) => {
   }
 }
 
-export const setErrorNotification = (message, seconds) => {
+export const setErrorNotification = (message, seconds = 5) => {
   return dispatch => {
     const timeout = seconds * 1000
     dispatch(addErrorNotification(message))
