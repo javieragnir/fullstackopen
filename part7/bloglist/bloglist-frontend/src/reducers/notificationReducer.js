@@ -28,12 +28,23 @@ const notificationSlice = createSlice({
   }
 })
 
-export const { addNotification, clearNotification } = notificationSlice.actions
+export const { addSuccessNotification, addErrorNotification, clearNotification } = notificationSlice.actions
 
-export const setNotification = (message, seconds) => {
+export const setSuccessNotification = (message, seconds) => {
   return dispatch => {
     const timeout = seconds * 1000
-    dispatch(addNotification(message))
+    dispatch(addSuccessNotification(message))
+    const newTimeoutId = setTimeout(() => {
+      dispatch(clearNotification())
+    }, timeout)
+    dispatch(setTimeoutId(newTimeoutId))
+  }
+}
+
+export const setErrorNotification = (message, seconds) => {
+  return dispatch => {
+    const timeout = seconds * 1000
+    dispatch(addErrorNotification(message))
     const newTimeoutId = setTimeout(() => {
       dispatch(clearNotification())
     }, timeout)
