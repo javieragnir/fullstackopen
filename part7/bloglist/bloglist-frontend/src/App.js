@@ -6,11 +6,11 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -19,11 +19,10 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogs)
-    })
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -61,7 +60,7 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = (blogObject) => {
+  /*   const addBlog = (blogObject) => {
     blogService
       .create(blogObject)
       .then((returnedBlog) => {
@@ -72,9 +71,9 @@ const App = () => {
       .catch(() => {
         dispatch(setErrorNotification('error adding blog', 5))
       })
-  }
+  } */
 
-  const updateLikes = (id, blogObject) => {
+  /*   const updateLikes = (id, blogObject) => {
     blogService.update(id, blogObject).then((returnedBlog) => {
       setBlogs(
         blogs
@@ -82,13 +81,13 @@ const App = () => {
           .sort((a, b) => b.likes - a.likes)
       )
     })
-  }
+  } */
 
-  const deleteBlog = (id) => {
+  /*   const deleteBlog = (id) => {
     blogService.deleteBlog(id).then(() => {
       setBlogs(blogs.filter((blog) => blog.id !== id))
     })
-  }
+  } */
 
   const toggleVisibility = () => {
     setFormVisible(!formVisible)
@@ -140,8 +139,8 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlog={updateLikes}
-          deleteBlog={deleteBlog}
+          // updateBlog={updateLikes}
+          // deleteBlog={deleteBlog}
         />
       ))}
       <h2>create new</h2>
@@ -151,7 +150,7 @@ const App = () => {
         visible={formVisible}
         toggleVisibility={toggleVisibility}
       >
-        <BlogForm createBlog={addBlog} />
+        <BlogForm /*createBlog={addBlog}*/ />
       </Togglable>
     </div>
   )
