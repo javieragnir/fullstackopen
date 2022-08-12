@@ -5,14 +5,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 
-/* import {
-  BrowserRouter as Router,
+import {
   Routes,
   Route,
-  Link
-} from 'react-router-dom' */
+  // Link
+} from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import UserList from './components/UserList'
+import { initializeUserList } from './reducers/userListReducer'
 
 const App = () => {
   const user = useSelector(state => state.user)
@@ -26,19 +27,20 @@ const App = () => {
     dispatch(initializeUser())
   }, [dispatch])
 
-  if (user === null) {
-    return (
-      <div>
-        <Notification />
-        <LoginForm />
-      </div>
-    )
-  }
+  useEffect(() => {
+    dispatch(initializeUserList())
+  }, [dispatch])
 
   return (
     <div>
       <Notification />
-      <BlogList />
+      {!user && <LoginForm />}
+      {user && <BlogList />}
+      <Routes>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/blogs" element={<BlogList />} />
+        <Route path="/users" element={<UserList />} />
+      </Routes>
     </div>
   )
 }
