@@ -9,6 +9,12 @@ const BlogForm = () => {
 
   const dispatch = useDispatch()
 
+  const resetFields = () => {
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+  }
+
   const addBlog = (event) => {
     event.preventDefault()
     dispatch(createBlog({
@@ -16,9 +22,12 @@ const BlogForm = () => {
       author: newAuthor,
       url: newUrl,
     }))
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+    resetFields()
+  }
+
+  const clearForm = (event) => {
+    event.preventDefault()
+    resetFields()
   }
 
   return (
@@ -58,6 +67,9 @@ const BlogForm = () => {
       </div>
       <button id="createButton" type="submit">
         create
+      </button>
+      <button onClick={clearForm}>
+        clear
       </button>
     </form>
   )
