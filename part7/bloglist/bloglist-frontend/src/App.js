@@ -36,6 +36,7 @@ const App = () => {
     <div>
       <Notification />
       {user && <Header />}
+
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/blogs" element={<BlogList />} />

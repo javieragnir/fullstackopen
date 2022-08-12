@@ -13,7 +13,6 @@ const LoginForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-
     try {
       const user = await loginService.login({
         username,
@@ -30,9 +29,6 @@ const LoginForm = () => {
       dispatch(setErrorNotification('wrong username or password', 5))
     }
   }
-
-  window.localStorage.removeItem('loggedBloglistUser')
-  dispatch(setUser(null))
 
   return (
     <div>
