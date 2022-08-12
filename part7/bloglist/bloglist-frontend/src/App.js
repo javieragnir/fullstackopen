@@ -13,6 +13,7 @@ import {
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
+import Header from './components/Header'
 import { initializeUserList } from './reducers/userListReducer'
 
 const App = () => {
@@ -34,8 +35,7 @@ const App = () => {
   return (
     <div>
       <Notification />
-      {!user && <LoginForm />}
-      {user && <BlogList />}
+      {user && <Header />}
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/blogs" element={<BlogList />} />
