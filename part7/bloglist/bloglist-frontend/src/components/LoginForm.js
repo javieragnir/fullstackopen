@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { setSuccessNotification, setErrorNotification } from '../reducers/notificationReducer'
@@ -8,8 +8,6 @@ import { setUser } from '../reducers/userReducer'
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
 
@@ -26,29 +24,22 @@ const LoginForm = () => {
       blogService.setToken(user.token)
       dispatch(setUser(user))
       setUsername('')
-      // setPassword('')
+      setPassword('')
       dispatch(setSuccessNotification('logged in successfully', 5))
     } catch (exception) {
       dispatch(setErrorNotification('wrong username or password', 5))
     }
   }
 
-  const handleLogout = (event) => {
-    event.preventDefault()
-
-    window.localStorage.removeItem('loggedBloglistUser')
-    dispatch(setUser(null))
-  }
-
-// return notification on top of the element? to avoid duplication
+  window.localStorage.removeItem('loggedBloglistUser')
+  dispatch(setUser(null))
 
   return (
     <div>
-      <Notification />
       <h2>log in to application</h2>
       <form className="loginForm" onSubmit={handleLogin}>
         <div>
-          username
+            username
           <input
             id="username"
             type="text"
@@ -58,7 +49,7 @@ const LoginForm = () => {
           />
         </div>
         <div>
-          password
+            password
           <input
             id="password"
             type="password"
@@ -68,12 +59,13 @@ const LoginForm = () => {
           />
         </div>
         <button id="loginButton" type="submit">
-          login
+            login
         </button>
       </form>
     </div>
   )
 }
+
 
 export default LoginForm
 
