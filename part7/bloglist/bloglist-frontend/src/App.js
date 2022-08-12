@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
+import { useEffect } from 'react'
 import Notification from './components/Notification'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser, initializeUser } from './reducers/userReducer'
+import { initializeUser } from './reducers/userReducer'
 
 /* import {
   BrowserRouter as Router,
@@ -15,13 +12,10 @@ import { setUser, initializeUser } from './reducers/userReducer'
   Link
 } from 'react-router-dom' */
 import LoginForm from './components/LoginForm'
+import BlogList from './components/BlogList'
 
 const App = () => {
-  const [formVisible, setFormVisible] = useState(false)
-
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
-
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -31,17 +25,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeUser())
   }, [dispatch])
-
-  const handleLogout = (event) => {
-    event.preventDefault()
-
-    window.localStorage.removeItem('loggedBloglistUser')
-    dispatch(setUser(null))
-  }
-
-  const toggleVisibility = () => {
-    setFormVisible(!formVisible)
-  }
 
   if (user === null) {
     return (
@@ -55,26 +38,7 @@ const App = () => {
   return (
     <div>
       <Notification />
-      <h2>blogs</h2>
-      <p>
-        {user.username} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-        />
-      ))}
-      <h2>create new</h2>
-
-      <Togglable
-        buttonLabel="add blog"
-        visible={formVisible}
-        toggleVisibility={toggleVisibility}
-      >
-        <BlogForm />
-      </Togglable>
+      <BlogList />
     </div>
   )
 }
