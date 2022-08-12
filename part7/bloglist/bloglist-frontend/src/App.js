@@ -11,6 +11,13 @@ import { setSuccessNotification, setErrorNotification } from './reducers/notific
 import { initializeBlogs } from './reducers/blogReducer'
 import { setUser, initializeUser } from './reducers/userReducer'
 
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from 'react-router-dom'
+
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
