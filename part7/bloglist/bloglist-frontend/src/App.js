@@ -9,12 +9,15 @@ import Notification from './components/Notification'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
+import { setUser, initializeUser } from './reducers/userReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [formVisible, setFormVisible] = useState(false)
+
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
 
@@ -22,16 +25,11 @@ const App = () => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  const blogs = useSelector(state => state.blogs)
+
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+    dispatch(initializeUser())
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -44,7 +42,7 @@ const App = () => {
 
       window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
       dispatch(setSuccessNotification('logged in successfully', 5))
@@ -57,37 +55,8 @@ const App = () => {
     event.preventDefault()
 
     window.localStorage.removeItem('loggedBloglistUser')
-    setUser(null)
+    dispatch(setUser(null))
   }
-
-  /*   const addBlog = (blogObject) => {
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        toggleVisibility()
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(setSuccessNotification('new blog added', 5))
-      })
-      .catch(() => {
-        dispatch(setErrorNotification('error adding blog', 5))
-      })
-  } */
-
-  /*   const updateLikes = (id, blogObject) => {
-    blogService.update(id, blogObject).then((returnedBlog) => {
-      setBlogs(
-        blogs
-          .map((blog) => (blog.id !== id ? blog : returnedBlog))
-          .sort((a, b) => b.likes - a.likes)
-      )
-    })
-  } */
-
-  /*   const deleteBlog = (id) => {
-    blogService.deleteBlog(id).then(() => {
-      setBlogs(blogs.filter((blog) => blog.id !== id))
-    })
-  } */
 
   const toggleVisibility = () => {
     setFormVisible(!formVisible)
@@ -139,8 +108,6 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          // updateBlog={updateLikes}
-          // deleteBlog={deleteBlog}
         />
       ))}
       <h2>create new</h2>
@@ -150,7 +117,7 @@ const App = () => {
         visible={formVisible}
         toggleVisibility={toggleVisibility}
       >
-        <BlogForm /*createBlog={addBlog}*/ />
+        <BlogForm />
       </Togglable>
     </div>
   )
