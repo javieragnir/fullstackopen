@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux'
-import { likeBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { useNavigate } from 'react-router-dom'
 
 const BlogPage = ({ blog }) => {
   if (!blog) {
@@ -7,10 +8,19 @@ const BlogPage = ({ blog }) => {
   }
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const updateLikes = (event) => {
     event.preventDefault()
     dispatch(likeBlog(blog))
+  }
+
+  const deleteSelf = (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)){
+      dispatch(deleteBlog(blog))
+    }
+    navigate('/blogs')
   }
 
   return (
@@ -24,6 +34,7 @@ const BlogPage = ({ blog }) => {
         </button>
       </div>
       <div>added by {blog.user.name}</div>
+      <p><button onClick={deleteSelf}>delete</button></p>
     </div>
   )
 }
