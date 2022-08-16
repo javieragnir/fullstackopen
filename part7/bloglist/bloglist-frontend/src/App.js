@@ -17,6 +17,7 @@ import UserList from './components/UserList'
 import Header from './components/Header'
 import { initializeUserList } from './reducers/userListReducer'
 import User from './components/User'
+import BlogPage from './components/BlogPage'
 
 const App = () => {
   const user = useSelector(state => state.user)
@@ -42,9 +43,12 @@ const App = () => {
     : null
 
   const blogMatch = useMatch('/blogs/:id')
-  const blog = blogMatch
-    ? blogs.find(blog => blog.id === Number(blogMatch.params.id))
+  const blogToView = blogMatch
+    ? blogs.find(blog => blog.id === blogMatch.params.id)
     : null
+
+  console.log(blogMatch)
+  console.log(blogToView)
 
   return (
     <div>
@@ -53,6 +57,7 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<LoginForm />} />
+        <Route path="/blogs/:id" element={<BlogPage blog={blogToView}/>} />
         <Route path="/blogs" element={<BlogList />} />
         <Route path="/users/:id" element={<User user={userToView} />} />
         <Route path="/users" element={<UserList />} />
