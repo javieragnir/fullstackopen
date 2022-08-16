@@ -41,10 +41,6 @@ const App = () => {
     ? userList.find(user => user.id === userMatch.params.id)
     : null
 
-  console.log(userMatch)
-  console.log('users', userList)
-  console.log(userToView)
-
   const blogMatch = useMatch('/blogs/:id')
   const blog = blogMatch
     ? blogs.find(blog => blog.id === Number(blogMatch.params.id))
