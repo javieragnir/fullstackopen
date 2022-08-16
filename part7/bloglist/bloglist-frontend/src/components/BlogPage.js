@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { useNavigate } from 'react-router-dom'
 import { addComment } from '../reducers/blogReducer'
+import { Button } from 'react-bootstrap'
 
 const BlogPage = ({ blog }) => {
   if (!blog) {
@@ -43,16 +44,16 @@ const BlogPage = ({ blog }) => {
       <div><a href={`//${blog.url}`}>{blog.url}</a></div>
       <div>
         {blog.likes} likes
-        <button onClick={updateLikes} className="likeButton">
+        <Button variant="primary" onClick={updateLikes} className="likeButton">
             like
-        </button>
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
-      <p><button onClick={deleteSelf}>delete</button></p>
+      <p><Button variant="danger" onClick={deleteSelf}>delete blog</Button></p>
       <h3>comments</h3>
       <form onSubmit={onSubmit}>
         <input name="comment" />
-        <button type="submit">add comment</button>
+        <Button variant="primary" type="submit">add comment</Button>
       </form>
       <ul>
         {blog.comments.map(comment => (

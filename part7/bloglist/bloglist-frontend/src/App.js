@@ -19,6 +19,7 @@ import LoggedUserDisplay from './components/LoggedUserDisplay'
 import { initializeUserList } from './reducers/userListReducer'
 import User from './components/User'
 import BlogPage from './components/BlogPage'
+import { Navbar, Nav } from 'react-bootstrap'
 
 const App = () => {
   const user = useSelector(state => state.user)
@@ -48,21 +49,37 @@ const App = () => {
     ? blogs.find(blog => blog.id === blogMatch.params.id)
     : null
 
-  const padding = {
+  const navbarLink = {
+    display: 'flex',
+    alignItems: 'center',
     padding: 5
   }
 
   return (
     <div>
-      <div>
-        <Notification />
-        <Link style={padding} to="/blogs">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user
-          ? <LoggedUserDisplay />
-          : <Link style={padding} to="/login">login</Link>
-        }
-      </div>
+
+      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#" as="span">
+              <Link style={navbarLink} to="/blogs">blogs</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={navbarLink} to="/users">users</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              {user
+                ? <LoggedUserDisplay />
+                : <Link style={navbarLink} to="/login">login</Link>
+              }
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+
+      <Notification />
+
 
       <Routes>
         <Route path="/" element={user ? <Navigate replace to="/blogs" /> : <LoginForm />}/>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createBlog } from '../reducers/blogReducer'
 import { useDispatch } from 'react-redux'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = () => {
   const [newTitle, setNewTitle] = useState('')
@@ -31,10 +32,10 @@ const BlogForm = () => {
   }
 
   return (
-    <form onSubmit={addBlog}>
-      <div>
-        title:
-        <input
+    <Form onSubmit={addBlog}>
+      <Form.Group>
+        <Form.Label>title:</Form.Label>
+        <Form.Control
           id="title"
           type="text"
           value={newTitle}
@@ -42,10 +43,8 @@ const BlogForm = () => {
           onChange={({ target }) => setNewTitle(target.value)}
           className="titleInput"
         />
-      </div>
-      <div>
-        author:
-        <input
+        <Form.Label>author:</Form.Label>
+        <Form.Control
           id="author"
           type="text"
           value={newAuthor}
@@ -53,10 +52,8 @@ const BlogForm = () => {
           onChange={({ target }) => setNewAuthor(target.value)}
           className="authorInput"
         />
-      </div>
-      <div>
-        url
-        <input
+        <Form.Label>url</Form.Label>
+        <Form.Control
           id="url"
           type="text"
           value={newUrl}
@@ -64,14 +61,14 @@ const BlogForm = () => {
           onChange={({ target }) => setNewUrl(target.value)}
           className="urlInput"
         />
-      </div>
-      <button id="createButton" type="submit">
+        <Button variant="primary" id="createButton" type="submit">
         create
-      </button>
-      <button onClick={clearForm}>
+        </Button>
+        <Button variant="secondary" onClick={clearForm}>
         clear
-      </button>
-    </form>
+        </Button>
+      </Form.Group>
+    </Form>
   )
 }
 

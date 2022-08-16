@@ -5,6 +5,7 @@ import blogService from '../services/blogs'
 import { setSuccessNotification, setErrorNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/userReducer'
 import { useNavigate } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -34,34 +35,36 @@ const LoginForm = () => {
     }
   }
 
+  const marginTop = {
+    marginTop: 10
+  }
+
   return (
     <div>
       <h2>log in to application</h2>
-      <form className="loginForm" onSubmit={handleLogin}>
-        <div>
-            username
-          <input
+      <Form className="loginForm" onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
             id="username"
             type="text"
             value={username}
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-            password
-          <input
+          <Form.Label>password:</Form.Label>
+          <Form.Control
             id="password"
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id="loginButton" type="submit">
-            login
-        </button>
-      </form>
+          <Button variant="primary" id="loginButton" type="submit" style={marginTop}>
+              login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

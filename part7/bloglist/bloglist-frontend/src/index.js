@@ -7,9 +7,11 @@ import { Provider } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <Router>
-      <App />
-    </Router>
-  </Provider>
+  <div className="container">
+    <Provider store={store}>
+      <Router>
+        <App />
+      </Router>
+    </Provider>
+  </div>
 )
