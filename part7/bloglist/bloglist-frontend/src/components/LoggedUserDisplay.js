@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '../reducers/userReducer'
 
-const Header = () => {
+const LoggedUserDisplay = () => {
 
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
@@ -13,15 +13,16 @@ const Header = () => {
     dispatch(setUser(null))
   }
 
+  const padding = {
+    padding: 5
+  }
+
   return (
-    <div>
-      <h2>blogs</h2>
-      <p>
-        {user.username} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-    </div>
+    <span style={padding}>
+      {user.username} logged in
+      <button onClick={handleLogout}>logout</button>
+    </span>
   )
 }
 
-export default Header
+export default LoggedUserDisplay

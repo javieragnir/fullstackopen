@@ -8,13 +8,14 @@ import { initializeUser } from './reducers/userReducer'
 import {
   Routes,
   Route,
-  // Link,
-  useMatch
+  Link,
+  useMatch,
+  Navigate
 } from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
-import Header from './components/Header'
+import LoggedUserDisplay from './components/LoggedUserDisplay'
 import { initializeUserList } from './reducers/userListReducer'
 import User from './components/User'
 import BlogPage from './components/BlogPage'
@@ -47,20 +48,29 @@ const App = () => {
     ? blogs.find(blog => blog.id === blogMatch.params.id)
     : null
 
-  console.log(blogMatch)
-  console.log(blogToView)
+  const padding = {
+    padding: 5
+  }
 
   return (
     <div>
-      <Notification />
-      {user && <Header />}
+      <div>
+        <Notification />
+        <Link style={padding} to="/blogs">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user
+          ? <LoggedUserDisplay />
+          : <Link style={padding} to="/login">login</Link>
+        }
+      </div>
 
       <Routes>
-        <Route path="/" element={<LoginForm />} />
-        <Route path="/blogs/:id" element={<BlogPage blog={blogToView}/>} />
-        <Route path="/blogs" element={<BlogList />} />
-        <Route path="/users/:id" element={<User user={userToView} />} />
-        <Route path="/users" element={<UserList />} />
+        <Route path="/" element={user ? <Navigate replace to="/blogs" /> : <LoginForm />}/>
+        <Route path="/login" element={user ? <Navigate replace to="/blogs" /> : <LoginForm />} />
+        <Route path="/blogs/:id" element={user ? <BlogPage blog={blogToView}/> : <Navigate replace to="/login" />} />
+        <Route path="/blogs" element={user ? <BlogList /> : <Navigate replace to="/login" />} />
+        <Route path="/users/:id" element={user ? <User user={userToView} /> : <Navigate replace to="/login" />} />
+        <Route path="/users" element={user ? <UserList /> : <Navigate replace to="/login" />} />
       </Routes>
     </div>
   )

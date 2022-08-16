@@ -4,12 +4,14 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { setSuccessNotification, setErrorNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/userReducer'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -25,6 +27,8 @@ const LoginForm = () => {
       setUsername('')
       setPassword('')
       dispatch(setSuccessNotification('logged in successfully', 5))
+      navigate('/')
+
     } catch (exception) {
       dispatch(setErrorNotification('wrong username or password', 5))
     }
